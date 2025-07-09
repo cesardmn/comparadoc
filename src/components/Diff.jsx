@@ -166,22 +166,29 @@ function Diff() {
     })
   }
 
-  const renderUnifiedDiff = () =>
-    diff.map((part, idx) => {
-      const className = part.added
-        ? 'bg-green-100 text-green-800'
-        : part.removed
-          ? 'bg-red-100 text-red-800 line-through'
-          : 'text-gray-800'
+  const renderUnifiedDiff = () => {
+    const lines = pairedLines()
+    return lines.map((line, idx) => {
+      const { oldLine, newLine, unchanged } = line
+      const highlight = unchanged
+        ? { old: oldLine, new: newLine }
+        : highlightWords(oldLine, newLine)
+
       return (
-        <span
+        <div
           key={idx}
-          className={`${className} whitespace-pre-wrap block px-4 py-1`}
+          className="text-sm font-sans whitespace-pre-wrap border-b border-gray-200 px-4 py-auto bg-white"
         >
-          {part.value}
-        </span>
+          <div className="mb-1 min-h-[1rem]">
+            {highlight.old?.length ? highlight.old : <>&nbsp;</>}
+          </div>
+          <div className="min-h-[1rem]">
+            {highlight.new?.length ? highlight.new : <>&nbsp;</>}
+          </div>
+        </div>
       )
     })
+  }
 
   const renderInlineMergedDiff = (oldText, newText) => {
     const wordDiff = diffWords(oldText, newText)
@@ -283,13 +290,13 @@ function Diff() {
               active={viewMode === 'unified'}
               onClick={() => setViewMode('unified')}
               icon="⇅"
-              label="Unificado"
+              label="Empilhado"
             />
             <ViewModeButton
               active={viewMode === 'inline-merged'}
               onClick={() => setViewMode('inline-merged')}
               icon="↔"
-              label="Linha única"
+              label="Unficado"
             />
           </div>
         </section>
@@ -333,7 +340,7 @@ const ViewModeButton = ({ active, onClick, icon, label }) => (
   <button
     onClick={onClick}
     className={`flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors border
-      ${active ? 'bg-or-3 text-bk-1 font-semibold border-or-2' : 'bg-bk-3 text-wt-2 hover:bg-bk-2 border-transparent'}`}
+      ${active ? 'bg-or-3 text-bk-1 font-semibold border-or-2' : 'bg-bk-3 text-wt-2 hover:bg-bk-2 border-transparent cursor-pointer'}`}
     aria-pressed={active}
   >
     <span>{icon}</span> <span>{label}</span>
