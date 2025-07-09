@@ -303,7 +303,7 @@ function Diff() {
       </div>
 
       {/* Resultado da comparação */}
-      <div className="bg-et-3 border border-gray-200 shadow-sm select-text">
+      <div className="bg-et-3 border border-gray-200 shadow-sm select-text text-gr-3">
         {viewMode === 'side-by-side' && (
           <div className="flex border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wide">
             <div className="w-1/2 border-r border-gray-200 px-4 py-2">
