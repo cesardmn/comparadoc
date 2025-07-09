@@ -282,7 +282,7 @@ function Diff() {
       </div>
 
       {/* Resultado da Comparação (estilo documento) */}
-      <div className="bg-white border border-gray-200 shadow-sm">
+      <div className="bg-white border border-gray-200 shadow-sm  select-text">
         {/* Cabeçalho lado a lado */}
         {viewMode === 'side-by-side' && (
           <div className="flex border-b border-gray-200 bg-gray-50 text-sm font-medium text-gray-500 uppercase">
