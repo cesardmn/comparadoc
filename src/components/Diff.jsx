@@ -108,8 +108,8 @@ function Diff() {
       old: wordDiff.map((part, idx) => {
         if (part.added) return null
         const className = part.removed
-          ? 'bg-[#ffe5e5] text-[#a30000] line-through'
-          : 'text-black'
+          ? 'bg-red-100 text-red-800 line-through px-1 rounded'
+          : 'text-gray-800'
         return (
           <span key={`old-${idx}`} className={className}>
             {part.value}
@@ -119,8 +119,8 @@ function Diff() {
       new: wordDiff.map((part, idx) => {
         if (part.removed) return null
         const className = part.added
-          ? 'bg-[#e0ffe5] text-[#006b2e]'
-          : 'text-black'
+          ? 'bg-green-100 text-green-800 px-1 rounded'
+          : 'text-gray-800'
         return (
           <span key={`new-${idx}`} className={className}>
             {part.value}
@@ -141,20 +141,20 @@ function Diff() {
       return (
         <div
           key={idx}
-          className=" w-full flex text-[13px] font-mono border-b border-[#dcdcdc] bg-[#f9f9f9] text-black"
+          className="w-full flex text-sm font-sans border-b border-gray-200 bg-white"
         >
-          <div className="w-1/2 border-r border-[#ccc] px-3 py-1 whitespace-pre-wrap bg-[#ffffff] text-black">
+          <div className="w-1/2 border-r border-gray-200 px-4 py-2 whitespace-pre-wrap">
             {unchanged ? (
-              <span>{highlight.old}</span>
+              <span className="text-gray-800">{highlight.old}</span>
             ) : (
-              <span>{highlight.old.length ? highlight.old : <>&nbsp;</>}</span>
+              <span>{highlight.old?.length ? highlight.old : <>&nbsp;</>}</span>
             )}
           </div>
-          <div className="w-1/2 px-3 py-1 whitespace-pre-wrap bg-[#fcfcfc] text-black">
+          <div className="w-1/2 px-4 py-2 whitespace-pre-wrap">
             {unchanged ? (
-              <span>{highlight.new}</span>
+              <span className="text-gray-800">{highlight.new}</span>
             ) : (
-              <span>{highlight.new.length ? highlight.new : <>&nbsp;</>}</span>
+              <span>{highlight.new?.length ? highlight.new : <>&nbsp;</>}</span>
             )}
           </div>
         </div>
@@ -165,12 +165,15 @@ function Diff() {
   const renderUnifiedDiff = () =>
     diff.map((part, idx) => {
       const className = part.added
-        ? 'bg-[#e0ffe5] text-[#006b2e]'
+        ? 'bg-green-100 text-green-800'
         : part.removed
-          ? 'bg-[#ffe5e5] text-[#a30000] line-through'
-          : 'text-black'
+          ? 'bg-red-100 text-red-800 line-through'
+          : 'text-gray-800'
       return (
-        <span key={idx} className={`${className} whitespace-pre-wrap`}>
+        <span
+          key={idx}
+          className={`${className} whitespace-pre-wrap block px-4 py-1`}
+        >
           {part.value}
         </span>
       )
@@ -180,12 +183,15 @@ function Diff() {
     const wordDiff = diffWords(oldText, newText)
     return wordDiff.map((part, idx) => {
       const className = part.added
-        ? 'bg-[#e0ffe5] text-[#006b2e] underline'
+        ? 'bg-green-100 text-green-800 underline'
         : part.removed
-          ? 'bg-[#ffe5e5] text-[#a30000] line-through'
-          : 'text-black'
+          ? 'bg-red-100 text-red-800 line-through'
+          : 'text-gray-800'
       return (
-        <span key={idx} className={`${className} whitespace-pre-wrap`}>
+        <span
+          key={idx}
+          className={`${className} whitespace-pre-wrap px-1 rounded`}
+        >
           {part.value}
         </span>
       )
@@ -197,7 +203,7 @@ function Diff() {
     return lines.map((line, idx) => (
       <div
         key={idx}
-        className="text-[13px] font-mono whitespace-pre-wrap py-1 border-b border-[#dcdcdc] text-black"
+        className="text-sm font-sans whitespace-pre-wrap py-2 px-4 border-b border-gray-200 bg-white"
       >
         {renderInlineMergedDiff(line.oldLine, line.newLine)}
       </div>
@@ -206,102 +212,122 @@ function Diff() {
 
   if (!docx1 || !docx2) {
     return (
-      <div className="p-4 italic text-[#555]">Aguardando documentos...</div>
+      <div className="p-6 text-center text-gray-500 bg-white rounded-lg border border-gray-200">
+        Selecione dois documentos DOCX para comparar
+      </div>
     )
   }
 
   if (loading) {
     return (
-      <div className="p-4 italic text-[#555]">
-        Processando diff linha a linha...
+      <div className="p-6 text-center text-gray-500 bg-white rounded-lg border border-gray-200">
+        Processando comparação...
       </div>
     )
   }
 
   return (
-    <div className="max-w-[1000px] mx-auto my-4 border border-[#ccc] rounded shadow bg-white text-black">
-      {/* Estatísticas */}
-      <div className="mb-4 p-4 bg-blue-50 rounded-lg">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-blue-800">
-              {stats.similarityPercentage}%
-            </div>
-            <div className="text-sm text-blue-600">Similarity</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-green-600">
-              {stats.added}
-            </div>
-            <div className="text-sm text-green-600">Additions</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-red-600">
-              {stats.removed}
-            </div>
-            <div className="text-sm text-red-600">Deletions</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-gray-700">
-              {stats.totalChanges}
-            </div>
-            <div className="text-sm text-gray-600">Total Changes</div>
-          </div>
+    <div className="w-full rounded-lg overflow-hidden">
+      {/* Área de Controle (tema dark) */}
+      <div className="bg-bk-2 p-4 border-b border-bk-3">
+        {/* Estatísticas com sticker effect */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <StatCard
+            value={`${stats.similarityPercentage}%`}
+            label="Similaridade"
+            color="text-or-2"
+            bgColor="bg-bk-3"
+          />
+          <StatCard
+            value={stats.added}
+            label="Adições"
+            color="text-[#6bff8b]"
+            bgColor="bg-bk-3"
+          />
+          <StatCard
+            value={stats.removed}
+            label="Remoções"
+            color="text-[#ff6b6b]"
+            bgColor="bg-bk-3"
+          />
+          <StatCard
+            value={stats.totalChanges}
+            label="Total de Mudanças"
+            color="text-wt-2"
+            bgColor="bg-bk-3"
+          />
+        </div>
+
+        {/* Botões de visualização */}
+        <div className="flex flex-wrap gap-2">
+          <ViewModeButton
+            active={viewMode === 'side-by-side'}
+            onClick={() => setViewMode('side-by-side')}
+            icon="⇄"
+            label="Lado a lado"
+          />
+          <ViewModeButton
+            active={viewMode === 'unified'}
+            onClick={() => setViewMode('unified')}
+            icon="⇅"
+            label="Unificado"
+          />
+          <ViewModeButton
+            active={viewMode === 'inline-merged'}
+            onClick={() => setViewMode('inline-merged')}
+            icon="↔"
+            label="Linha única"
+          />
         </div>
       </div>
 
-      {/* Botões */}
-      <div className="flex justify-end gap-2 p-2 bg-[#f2f2f2] border-b border-[#ccc]">
-        <button
-          onClick={() => setViewMode('side-by-side')}
-          className={`px-3 py-1 text-sm rounded border ${
-            viewMode === 'side-by-side'
-              ? 'bg-[#0057d9] text-white'
-              : 'bg-white text-black border-[#aaa]'
-          }`}
-        >
-          Lado a lado
-        </button>
-        <button
-          onClick={() => setViewMode('unified')}
-          className={`px-3 py-1 text-sm rounded border ${
-            viewMode === 'unified'
-              ? 'bg-[#0057d9] text-white'
-              : 'bg-white text-black border-[#aaa]'
-          }`}
-        >
-          Unificado
-        </button>
-        <button
-          onClick={() => setViewMode('inline-merged')}
-          className={`px-3 py-1 text-sm rounded border ${
-            viewMode === 'inline-merged'
-              ? 'bg-[#0057d9] text-white'
-              : 'bg-white text-black border-[#aaa]'
-          }`}
-        >
-          Linha única
-        </button>
-      </div>
+      {/* Resultado da Comparação (estilo documento) */}
+      <div className="bg-white border border-gray-200 shadow-sm">
+        {/* Cabeçalho lado a lado */}
+        {viewMode === 'side-by-side' && (
+          <div className="flex border-b border-gray-200 bg-gray-50 text-sm font-medium text-gray-500 uppercase">
+            <div className="w-1/2 border-r border-gray-200 px-4 py-2">
+              Documento Original
+            </div>
+            <div className="w-1/2 px-4 py-2">Documento Modificado</div>
+          </div>
+        )}
 
-      {/* Cabeçalho lado a lado */}
-      {viewMode === 'side-by-side' && (
-        <div className="flex border-b bg-[#f0f0f0] text-xs font-bold text-[#444] uppercase">
-          <div className="w-1/2 border-r px-3 py-2 border-[#ccc]">Original</div>
-          <div className="w-1/2 px-3 py-2">Modificado</div>
+        {/* Conteúdo */}
+        <div className="max-h-[60vh] overflow-y-auto">
+          {viewMode === 'side-by-side'
+            ? renderDiff()
+            : viewMode === 'unified'
+              ? renderUnifiedDiff()
+              : renderInlineMergedLines()}
         </div>
-      )}
-
-      {/* Conteúdo */}
-      <div className="p-4 text-sm font-mono whitespace-pre-wrap leading-relaxed text-black">
-        {viewMode === 'side-by-side'
-          ? renderDiff()
-          : viewMode === 'unified'
-            ? renderUnifiedDiff()
-            : renderInlineMergedLines()}
       </div>
     </div>
   )
 }
+
+// Componente StatCard atualizado com sticker effect
+const StatCard = ({ value, label, color, bgColor }) => (
+  <div className={`${bgColor} p-3 rounded-lg border border-bk-3 shadow-sm`}>
+    <div className="text-center">
+      <div className={`text-xl font-bold ${color}`}>{value}</div>
+      <div className="text-xs text-gr-2 mt-1">{label}</div>
+    </div>
+  </div>
+)
+
+// Componente ViewModeButton simplificado
+const ViewModeButton = ({ active, onClick, icon, label }) => (
+  <button
+    onClick={onClick}
+    className={`px-3 py-2 text-sm rounded transition-colors ${
+      active
+        ? 'bg-or-3 text-bk-1 font-medium'
+        : 'bg-bk-3 text-wt-2 hover:bg-bk-1'
+    }`}
+  >
+    {icon} {label}
+  </button>
+)
 
 export default Diff

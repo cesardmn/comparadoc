@@ -42,20 +42,26 @@ const Uploader = ({ label }) => {
       .toLowerCase()
 
     if (!acceptedExtensions.includes(fileExtension)) {
-      setError('Tipo de arquivo não permitido.')
+      setError('Apenas arquivos .docx são suportados')
+      setSelectedFile(null)
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      // 5MB limit
+      setError('O arquivo é muito grande (máx. 5MB)')
       setSelectedFile(null)
       return
     }
 
     setSelectedFile(file)
-    label === 'Documento 1' ? setDocx1(file) : setDocx2(file)
+    label === 'original' ? setDocx1(file) : setDocx2(file)
     setError(null)
   }
 
   const removeFile = () => {
     setSelectedFile(null)
-    label === 'Documento 1' ? setDocx1(null) : setDocx2(null)
-
+    label === 'original' ? setDocx1(null) : setDocx2(null)
     setError(null)
   }
 
@@ -70,16 +76,17 @@ const Uploader = ({ label }) => {
   const inputId = `file-input-${label.replace(/\s+/g, '-').toLowerCase()}`
 
   return (
-    <div className="w-full">
-      <label className="block text-sm font-medium text-wt-3 mb-2">
-        {label}
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-wt-2">
+        {`Importe o documento ${label}:`}
       </label>
 
       {!selectedFile ? (
         <div
           className={`
-            relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors duration-200
-            ${isDragOver ? 'border-or-1 bg-bk-2' : 'border-gr-2 bg-bk-1'}
+            relative border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200
+            ${isDragOver ? 'border-or-2 bg-bk-3' : 'border-bk-3 bg-bk-2'}
+            ${error ? 'border-or-3' : ''}
           `}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -94,30 +101,39 @@ const Uploader = ({ label }) => {
             className="hidden"
           />
 
-          <Upload
-            className={`mx-auto h-12 w-12 ${error ? 'text-or-3' : 'text-gr-2'}`}
-          />
-          <p className={`mt-2 text-sm ${error ? 'text-or-3' : 'text-wt-3'}`}>
-            Clique para selecionar ou arraste um arquivo aqui.
-          </p>
-          <p className={`text-xs ${error ? 'text-or-3' : 'text-gr-2'}`}>
-            Tipos permitidos: {acceptedExtensions.join(', ')}
-          </p>
+          <div className="flex flex-col items-center justify-center space-y-3">
+            <Upload
+              className={`h-10 w-10 ${error ? 'text-or-3' : 'text-or-2'}`}
+            />
+            <div className="space-y-1">
+              <p className={`text-sm ${error ? 'text-or-3' : 'text-wt-2'}`}>
+                Arraste e solte o arquivo aqui
+              </p>
+              <p className={`text-xs ${error ? 'text-or-3' : 'text-gr-2'}`}>
+                ou clique para selecionar
+              </p>
+            </div>
+            <p className={`text-xs ${error ? 'text-or-3' : 'text-gr-1'}`}>
+              Apenas .docx (máx. 5MB)
+            </p>
+          </div>
 
           {error && (
-            <div className="mt-2 flex items-center justify-center text-or-3">
+            <div className="mt-4 flex items-center justify-center text-or-3 text-sm">
               <AlertCircle className="h-4 w-4 mr-1" />
-              <span className="text-xs">{error}</span>
+              <span>{error}</span>
             </div>
           )}
         </div>
       ) : (
-        <div className="border border-gr-2 rounded-lg p-4 bg-bk-2">
+        <div className="border border-bk-3 rounded-lg p-4 bg-bk-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <File className="h-8 w-8 text-of-blue-2" />
+              <div className="p-2 bg-or-3/10 rounded-lg text-or-2">
+                <File className="h-5 w-5" />
+              </div>
               <div>
-                <p className="text-sm font-medium text-wt-1">
+                <p className="text-sm font-medium text-wt-1 truncate max-w-[200px]">
                   {selectedFile.name}
                 </p>
                 <p className="text-xs text-gr-2">
@@ -128,9 +144,10 @@ const Uploader = ({ label }) => {
             </div>
             <button
               onClick={removeFile}
-              className="p-1 rounded-full hover:bg-bk-3 transition-colors duration-200"
+              className="p-1 rounded-full hover:bg-bk-3 transition-colors duration-200 text-gr-2 hover:text-wt-1"
+              aria-label="Remover arquivo"
             >
-              <X className="h-4 w-4 text-gr-2" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>
