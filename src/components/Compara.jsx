@@ -4,7 +4,7 @@ import Diff from './Diff'
 
 const Compara = () => {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 pt-8 pb-2 space-y-8">
       <div className="flex items-start gap-4">
         <div className="p-3 bg-or-3/10 rounded-lg text-or-2">
           <GitCompare className="h-6 w-6" />

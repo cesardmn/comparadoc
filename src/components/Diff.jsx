@@ -141,20 +141,24 @@ function Diff() {
       return (
         <div
           key={idx}
-          className="w-full flex text-sm font-sans border-b border-gray-200 bg-white"
+          className="flex text-sm font-sans border-b border-gray-200 bg-white"
         >
           <div className="w-1/2 border-r border-gray-200 px-4 py-2 whitespace-pre-wrap">
             {unchanged ? (
               <span className="text-gray-800">{highlight.old}</span>
             ) : (
-              <span>{highlight.old?.length ? highlight.old : <>&nbsp;</>}</span>
+              <span>
+                {highlight.old?.length ? highlight.old : <span>&nbsp;</span>}
+              </span>
             )}
           </div>
           <div className="w-1/2 px-4 py-2 whitespace-pre-wrap">
             {unchanged ? (
               <span className="text-gray-800">{highlight.new}</span>
             ) : (
-              <span>{highlight.new?.length ? highlight.new : <>&nbsp;</>}</span>
+              <span>
+                {highlight.new?.length ? highlight.new : <span>&nbsp;</span>}
+              </span>
             )}
           </div>
         </div>
@@ -227,65 +231,74 @@ function Diff() {
   }
 
   return (
-    <div className="w-full rounded-lg overflow-hidden">
-      {/* Área de Controle (tema dark) */}
-      <div className="bg-bk-2 p-4 border-b border-bk-3">
-        {/* Estatísticas com sticker effect */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <StatCard
-            value={`${stats.similarityPercentage}%`}
-            label="Similaridade"
-            color="text-or-2"
-            bgColor="bg-bk-3"
-          />
-          <StatCard
-            value={stats.added}
-            label="Adições"
-            color="text-[#6bff8b]"
-            bgColor="bg-bk-3"
-          />
-          <StatCard
-            value={stats.removed}
-            label="Remoções"
-            color="text-[#ff6b6b]"
-            bgColor="bg-bk-3"
-          />
-          <StatCard
-            value={stats.totalChanges}
-            label="Total de Mudanças"
-            color="text-wt-2"
-            bgColor="bg-bk-3"
-          />
-        </div>
-
-        {/* Botões de visualização */}
-        <div className="flex flex-wrap gap-2">
-          <ViewModeButton
-            active={viewMode === 'side-by-side'}
-            onClick={() => setViewMode('side-by-side')}
-            icon="⇄"
-            label="Lado a lado"
-          />
-          <ViewModeButton
-            active={viewMode === 'unified'}
-            onClick={() => setViewMode('unified')}
-            icon="⇅"
-            label="Unificado"
-          />
-          <ViewModeButton
-            active={viewMode === 'inline-merged'}
-            onClick={() => setViewMode('inline-merged')}
-            icon="↔"
-            label="Linha única"
-          />
-        </div>
+    <div className="w-full rounded-lg overflow-hidden flex flex-col">
+      {/* Estatísticas */}
+      <div className="bg-bk-2 p-6 space-y-6 rounded-lg">
+        <section aria-labelledby="stats-heading" className="space-y-4">
+          <h2 id="stats-heading" className="text-wt-1 font-medium text-lg">
+            Resultados da Comparação
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCard
+              value={`${stats.similarityPercentage}%`}
+              label="Similaridade"
+              color="text-or-2"
+            />
+            <StatCard
+              value={stats.added}
+              label="Adições"
+              color="text-[#6bff8b]"
+            />
+            <StatCard
+              value={stats.removed}
+              label="Remoções"
+              color="text-[#ff6b6b]"
+            />
+            <StatCard
+              value={stats.totalChanges}
+              label="Total de Mudanças"
+              color="text-wt-2"
+            />
+          </div>
+        </section>
       </div>
 
-      {/* Resultado da Comparação (estilo documento) */}
-      <div className="bg-white border border-gray-200 shadow-sm  select-text">
-        {/* Cabeçalho lado a lado */}
+      {/* Botões de visualização */}
+      <div className="bg-bk-1 text-gr-3 my-4 px-6 py-4">
+        <section aria-labelledby="diff-view-heading">
+          <h3
+            id="diff-view-heading"
+            className="text-wt-1 font-medium text-lg mb-4"
+          >
+            Modo de Visualização
+          </h3>
+          <div className="flex flex-wrap gap-3">
+            <ViewModeButton
+              active={viewMode === 'side-by-side'}
+              onClick={() => setViewMode('side-by-side')}
+              icon="⇄"
+              label="Lado a lado"
+            />
+            <ViewModeButton
+              active={viewMode === 'unified'}
+              onClick={() => setViewMode('unified')}
+              icon="⇅"
+              label="Unificado"
+            />
+            <ViewModeButton
+              active={viewMode === 'inline-merged'}
+              onClick={() => setViewMode('inline-merged')}
+              icon="↔"
+              label="Linha única"
+            />
+          </div>
+        </section>
+      </div>
+
+      {/* Resultado da comparação */}
+      <div className="bg-et-3 border border-gray-200 shadow-sm select-text">
         {viewMode === 'side-by-side' && (
-          <div className="flex border-b border-gray-200 bg-gray-50 text-sm font-medium text-gray-500 uppercase">
+          <div className="flex border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wide">
             <div className="w-1/2 border-r border-gray-200 px-4 py-2">
               Documento Original
             </div>
@@ -293,8 +306,7 @@ function Diff() {
           </div>
         )}
 
-        {/* Conteúdo */}
-        <div className="max-h-[60vh] overflow-y-auto">
+        <div className="max-h-[60vh] overflow-y-auto bg-wt-1 ">
           {viewMode === 'side-by-side'
             ? renderDiff()
             : viewMode === 'unified'
@@ -306,9 +318,10 @@ function Diff() {
   )
 }
 
-// Componente StatCard atualizado com sticker effect
 const StatCard = ({ value, label, color, bgColor }) => (
-  <div className={`${bgColor} p-3 rounded-lg border border-bk-3 shadow-sm`}>
+  <div
+    className={`${bgColor || ''} p-3 rounded-lg border border-bk-3 shadow-sm`}
+  >
     <div className="text-center">
       <div className={`text-xl font-bold ${color}`}>{value}</div>
       <div className="text-xs text-gr-2 mt-1">{label}</div>
@@ -316,17 +329,14 @@ const StatCard = ({ value, label, color, bgColor }) => (
   </div>
 )
 
-// Componente ViewModeButton simplificado
 const ViewModeButton = ({ active, onClick, icon, label }) => (
   <button
     onClick={onClick}
-    className={`px-3 py-2 text-sm rounded transition-colors ${
-      active
-        ? 'bg-or-3 text-bk-1 font-medium'
-        : 'bg-bk-3 text-wt-2 hover:bg-bk-1'
-    }`}
+    className={`flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors border
+      ${active ? 'bg-or-3 text-bk-1 font-semibold border-or-2' : 'bg-bk-3 text-wt-2 hover:bg-bk-2 border-transparent'}`}
+    aria-pressed={active}
   >
-    {icon} {label}
+    <span>{icon}</span> <span>{label}</span>
   </button>
 )
 
