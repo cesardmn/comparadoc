@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { diffLines, diffWords } from 'diff'
 import { useCompara } from '../store/comparaStore'
 import { documentParser } from '../utils/documentParser'
+import { Diff as DiffIcon } from 'lucide-react'
 
 function Diff() {
   const { docx1, docx2 } = useCompara()
@@ -295,7 +296,7 @@ function Diff() {
             <ViewModeButton
               active={viewMode === 'inline-merged'}
               onClick={() => setViewMode('inline-merged')}
-              icon="↔"
+              icon={<DiffIcon size={12} />}
               label="Unficado"
             />
           </div>
@@ -313,7 +314,7 @@ function Diff() {
           </div>
         )}
 
-        <div className="max-h-[60vh] overflow-y-auto bg-wt-1 ">
+        <div className="max-h-[60vh] overflow-y-auto bg-wt-1 pt-6">
           {viewMode === 'side-by-side'
             ? renderDiff()
             : viewMode === 'unified'
