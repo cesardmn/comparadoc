@@ -76,7 +76,7 @@ const Uploader = ({ label }) => {
   const inputId = `file-input-${label.replace(/\s+/g, '-').toLowerCase()}`
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 cursor-pointer ">
       <label className="block text-sm font-medium text-wt-2">
         {`Importe o documento ${label}:`}
       </label>
@@ -84,7 +84,7 @@ const Uploader = ({ label }) => {
       {!selectedFile ? (
         <div
           className={`
-            relative border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200
+            relative border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200 hover:border-or-2
             ${isDragOver ? 'border-or-2 bg-bk-3' : 'border-bk-3 bg-bk-2'}
             ${error ? 'border-or-3' : ''}
           `}
